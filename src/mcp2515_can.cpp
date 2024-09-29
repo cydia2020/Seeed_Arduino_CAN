@@ -1294,9 +1294,17 @@ byte mcp2515_can::readMsgBufID(byte status, volatile unsigned long* id, volatile
 
     if (status & MCP_RX0IF) {                                        // Msg in Buffer 0
         mcp2515_read_canMsg(MCP_READ_RX0, id, ext, rtrBit, len, buf);
+    	mcp2515_readRegister(MCP_CANINTF);
+    	byte canintf = MCP_CANINTF;
+    	canintf &= ~(1UL << 0);
+    	mcp2515_setRegister(MCP_CANINTF,canintf);
         rc = CAN_OK;
     } else if (status & MCP_RX1IF) {                                 // Msg in Buffer 1
         mcp2515_read_canMsg(MCP_READ_RX1, id, ext, rtrBit, len, buf);
+        mcp2515_readRegister(MCP_CANINTF);
+    	byte canintf = MCP_CANINTF;	
+    	canintf &= ~(1UL << 1);	
+    	mcp2515_setRegister(MCP_CANINTF,canintf);
         rc = CAN_OK;
     }
 
